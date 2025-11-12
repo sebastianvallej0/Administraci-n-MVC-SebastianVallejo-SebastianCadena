@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container { 
+            background: white; 
+            padding: 40px;
+            border-radius: 12px; 
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 700px;
+        }
+        h1 { 
+            color: #333; 
+            margin-bottom: 10px;
+            font-size: 28px;
+            text-align: center;
+        }
+        .welcome-text {
+            text-align: center;
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 30px;
+        }
+        .role-badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+        .badge-admin { background-color: #dc3545; color: white; }
+        .badge-subadmin { background-color: #ffc107; color: #212529; }
+        .badge-user { background-color: #6c757d; color: white; }
+        .buttons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+        }
+        .btn-link {
+            display: block;
+            padding: 16px 20px;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            text-align: center;
+            font-size: 15px;
+        }
+        .btn-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+        }
+        .btn-primary { background: linear-gradient(135deg, #007bff, #0056b3); }
+        .btn-success { background: linear-gradient(135deg, #28a745, #1e7e34); }
+        .btn-warning { background: linear-gradient(135deg, #ffc107, #e0a800); color: #212529; }
+        .btn-danger { background: linear-gradient(135deg, #dc3545, #c82333); }
+        .message {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        .message.success { 
+            background-color: #d4edda; 
+            color: #155724; 
+            border: 1px solid #c3e6cb; 
+        }
+        .message.error { 
+            background-color: #f8d7da; 
+            color: #721c24; 
+            border: 1px solid #f5c6cb; 
+        }
+        
+        /* Responsive para tablets */
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px 25px;
+            }
+            h1 {
+                font-size: 24px;
+            }
+            .buttons-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Responsive para móviles */
+        @media (max-width: 480px) {
+            .container {
+                padding: 25px 20px;
+            }
+            h1 {
+                font-size: 22px;
+            }
+            .welcome-text {
+                font-size: 14px;
+            }
+            .btn-link {
+                padding: 14px 16px;
+                font-size: 14px;
+            }
+            .role-badge {
+                display: block;
+                margin: 10px auto 0;
+                width: fit-content;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="message {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <h1>
+            ¡Bienvenido, {{ username }}!
+            {% if user_role == 'admin' %}
+                <span class="role-badge badge-admin">ADMIN</span>
+            {% elif user_role == 'subadmin' %}
+                <span class="role-badge badge-subadmin">SUBADMIN</span>
+            {% else %}
+                <span class="role-badge badge-user">USER</span>
+            {% endif %}
+        </h1>
+        <p class="welcome-text">Has iniciado sesión exitosamente en tu aplicación web.</p>
+        
+        <div class="buttons-grid">
+            <a href="{{ url_for('web.list_users') }}" class="btn-link btn-primary">👥 Ver Usuarios</a>
+            
+            {% if user_role in ['admin', 'subadmin'] %}
+                <a href="{{ url_for('web.admin_dashboard') }}" class="btn-link btn-success">🛠️ Panel de Administración</a>
+            {% endif %}
+            
+            {% if user_role == 'admin' %}
+                <a href="{{ url_for('web.admin_system_info') }}" class="btn-link btn-warning">📊 Info del Sistema</a>
+            {% endif %}
+            
+            <a href="{{ url_for('web.logout') }}" class="btn-link btn-danger">🚪 Cerrar Sesión</a>
+        </div>
+    </div>
+</body>
+</html>

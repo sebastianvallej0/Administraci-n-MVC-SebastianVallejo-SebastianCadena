@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ form_title }}</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f9;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container { 
+            max-width: 700px;
+            width: 100%;
+            background: white; 
+            padding: 40px;
+            border-radius: 12px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+        }
+        h1 { 
+            text-align: center; 
+            color: #333; 
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+        form { 
+            display: flex; 
+            flex-direction: column;
+        }
+        label { 
+            margin-top: 18px; 
+            font-weight: 600; 
+            color: #555;
+            font-size: 15px;
+        }
+        input, textarea, select {
+            padding: 12px;
+            margin-top: 6px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 15px;
+            font-family: inherit;
+            transition: border 0.3s;
+        }
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        textarea { 
+            resize: vertical; 
+            min-height: 100px;
+        }
+        button {
+            margin-top: 25px;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+        }
+        .btn-back {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 12px 24px;
+            background-color: #6c757d;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            text-align: center;
+            transition: background 0.3s;
+            font-weight: 600;
+        }
+        .btn-back:hover { 
+            background-color: #5a6268; 
+        }
+        .message {
+            text-align: center;
+            margin-bottom: 15px;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        .message.success { 
+            background-color: #d4edda; 
+            color: #155724; 
+            border: 1px solid #c3e6cb; 
+        }
+        .message.error { 
+            background-color: #f8d7da; 
+            color: #721c24; 
+            border: 1px solid #f5c6cb; 
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .form-row > div {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Responsive para tablets */
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px 25px;
+            }
+            h1 {
+                font-size: 24px;
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+        }
+        
+        /* Responsive para móviles */
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                padding: 25px 20px;
+            }
+            h1 {
+                font-size: 22px;
+                margin-bottom: 25px;
+            }
+            input, textarea, select, button {
+                font-size: 14px;
+            }
+            label {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="message {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <h1>{{ form_title }}</h1>
+        
+        <form method="POST">
+            <label for="name">Nombre del Producto *</label>
+            <input type="text" id="name" name="name" value="{{ product.name if product else '' }}" required>
+            
+            <label for="description">Descripción</label>
+            <textarea id="description" name="description" placeholder="Descripción detallada del producto...">{{ product.description if product else '' }}</textarea>
+            
+            <div class="form-row">
+                <div>
+                    <label for="price">Precio ($) *</label>
+                    <input type="number" step="0.01" id="price" name="price" value="{{ product.price if product else '' }}" required min="0">
+                </div>
+                <div>
+                    <label for="stock">Stock *</label>
+                    <input type="number" id="stock" name="stock" value="{{ product.stock if product else '' }}" required min="0">
+                </div>
+            </div>
+            
+            <label for="supplier_id">Proveedor (opcional)</label>
+            <select id="supplier_id" name="supplier_id">
+                <option value="">-- Sin proveedor --</option>
+                {% for supplier in suppliers %}
+                    <option value="{{ supplier.id }}" 
+                        {% if product and product.supplier and supplier.name == product.supplier %}selected{% endif %}>
+                        {{ supplier.name }}
+                    </option>
+                {% endfor %}
+            </select>
+            
+            <button type="submit">💾 Guardar Producto</button>
+        </form>
+        
+        <a href="{{ url_for('web.admin_products_list') }}" class="btn-back">❌ Cancelar</a>
+    </div>
+</body>
+</html>
