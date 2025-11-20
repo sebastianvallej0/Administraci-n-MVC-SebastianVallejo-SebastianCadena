@@ -132,13 +132,13 @@ Gestión completa de productos, proveedores y estadísticas del sistema en tiemp
 
 ##  Autor
 
-**Sebastian Cadena **
+**Sebastian Cadena - Sebastian Vallejo **
 
-Sebastian Cadena
+Sebastian Cadena - Sebastian Vallejo
 
-- GitHub: [@JuanSCadena](https://github.com/JuanSCadena)
-- Email: js.cadenawork@outlook.com
 
+- GitHub: https://github.com/sebastianvallej0/Administraci-n-MVC-SebastianVallejo-SebastianCadena.git
+-Render Dashboard: https://administracionmvc-sebastianvallejo.onrender.com/
 ---
 
 ##  Agradecimientos
